@@ -2,8 +2,6 @@ package main
 
 import (
 	"goprojects/AnnonceService/webserver"
-	"net/http"
-	"os"
 )
 
 // This is the main and are supposed to delegate the work to the other packages
@@ -16,8 +14,8 @@ import (
 // handler
 func main() {
 
-	port := os.Getenv("PORT")
-
-	http.HandleFunc("/Announce", webserver.Routing())
-	http.ListenAndServe(":"+port, nil)
+	ok := webserver.ServerStartup()
+	if !ok {
+		panic("Server didnt start up correctely")
+	}
 }

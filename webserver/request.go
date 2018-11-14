@@ -24,17 +24,19 @@ import (
 // and send the request to right handler
 func Routing(w http.ResponseWriter, r http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
-	ch := make(chan string)
-	ch <- parts[1]
 
-	if len(parts[1] == 2) {}
-		Request(ch, r.Method)
+	if len(parts) == 2 {}
+		Request(, r.Method)
 
 		}
 	}
 
 }
 
-func Request(ch chan<-string, method string) {
-	
+func Request(req string, method string) {
+	if req == "login" {
+
+	} else if req == "NewUser"{
+
+	}
 }
