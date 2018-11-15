@@ -22,21 +22,27 @@ import (
 
 // Routing function will use regex, and redirect or check the urlpath
 // and send the request to right handler
-func Routing(w http.ResponseWriter, r http.Request) {
+func Routing(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 
-	if len(parts) == 2 {}
-		Request(, r.Method)
+	if len(parts) == 2 {
+		Request(parts[1], r.Method)
 
-		}
 	}
+}
+
+// MainPage Displays this page if your not logged in
+func MainPage(w http.ResponseWriter, r *http.Request) {
+
+	tpl.ExecuteTemplate(w, "index.html", nil)
 
 }
 
+// Request checks for certain codintions
 func Request(req string, method string) {
 	if req == "login" {
 
-	} else if req == "NewUser"{
+	} else if req == "NewUser" {
 
 	}
 }
