@@ -14,8 +14,6 @@ import (
 // handler
 func main() {
 
-	ok := webserver.ServerStartup()
-	if !ok {
-		panic("Server didnt start up correctely")
-	}
+	webserver.Init()
+	webserver.ServerStartup()
 }
