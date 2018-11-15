@@ -31,6 +31,9 @@ func decodeToken(token string) (interface{}, interface{}) {
 		}
 		return hmacSecret, nil
 	})
+	if err != nil {
+		return false, err
+	}
 
 	if claims, ok := data.Claims.(jwt.MapClaims); ok && data.Valid {
 		return claims["username"], claims["password"]
