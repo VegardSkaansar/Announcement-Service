@@ -15,5 +15,6 @@ import (
 func main() {
 
 	webserver.Init()
-	webserver.ServerStartup()
+	webserver.ServerStart()
+	webserver.ServerRequest()
 }

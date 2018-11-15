@@ -7,7 +7,6 @@ import "gopkg.in/mgo.v2/bson"
 type MongoDB struct {
 	DatabaseURL      string
 	DatabaseName     string
-	DatabaseUser     string
 	DatabaseAnnounce string
 }
 
@@ -21,8 +20,7 @@ type User struct {
 	FirstName string        `json:"firstname"`
 	LastName  string        `json:"lastname"`
 	Year      string        `json:"year"`
-	Role      string        `json:"-" bson:"role"`
-	anno      Announce
+	Admin     bool          `json:"-" bson:"admin"`
 }
 
 // Announce is the db structure for all the announcement given from
@@ -34,52 +32,10 @@ type Announce struct {
 	Cost        int           `json:"cost"`
 }
 
-// StorageUser interface for the database for adding users and deleting
-// Only admins can use this interface
-type StorageUser interface {
-	AddUser(person User)
-	DeleteUser(username string)
-	ExistUser(username string) bool
-}
-
-// AddUser adds a user to the datastructure
-func (db *MongoDB) AddUser(person User) {
-
-}
-
-// DeleteUser deletes a user from the db
-func (db *MongoDB) DeleteUser(username string) {
-
-}
-
-// ExistUser checks if a user with this username exist
-func (db *MongoDB) ExistUser(username string) bool {
-
-	return true
-}
-
-// StorageAnnouncement non admin inteface and here can clients
-// add their Annoucements delete or modify
-type StorageAnnouncement interface {
-	AddAnnouncement(ad Announce) bool
-	DeleteAnnouncement(title string) bool
-	ModifyAnnouncement(title string) bool
-}
-
-// AddAnnouncement adds a users announce
-func (db *MongoDB) AddAnnouncement(ad Announce) bool {
-
-	return true
-}
-
-// DeleteAnnouncement takes a announce with a title and deletes it
-func (db *MongoDB) DeleteAnnouncement(title string) bool {
-
-	return true
-}
-
-// ModifyAnnouncement Takes a title and modifies what information the user wants
-func (db *MongoDB) ModifyAnnouncement(title string) bool {
-
-	return true
+// Collection is how we will store our data in the db
+// so we will have a user with its information and then
+// have all of the announces this user have posted
+type Collection struct {
+	person User
+	ads    []Announce
 }

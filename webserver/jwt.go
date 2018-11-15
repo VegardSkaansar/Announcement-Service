@@ -37,8 +37,7 @@ func decodeToken(token string) (interface{}, interface{}) {
 
 	if claims, ok := data.Claims.(jwt.MapClaims); ok && data.Valid {
 		return claims["username"], claims["password"]
-	} else {
-		return false, false
 	}
+	return false, false
 
 }
