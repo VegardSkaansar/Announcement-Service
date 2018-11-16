@@ -15,7 +15,7 @@ var GlobalDBAdmin StorageUser
 // Only admins can use this interface
 type StorageUser interface {
 	Init()
-	AddUser(person User)
+	AddUser(person Collection)
 	DeleteUser(username string)
 	ExistUser(username string) bool
 }
