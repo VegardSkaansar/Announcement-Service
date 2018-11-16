@@ -1,6 +1,7 @@
 package webserver
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -22,6 +23,10 @@ import (
 // Routing function will use regex, and redirect or check the urlpath
 // and send the request to right handler
 func Routing(w http.ResponseWriter, r *http.Request) {
+	if TokenMiddleware(w, r) == false {
+		w.Write([]byte(http.StatusText(http.StatusForbidden)))
+		return
+	}
 
 }
 
@@ -29,5 +34,22 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 func MainPage(w http.ResponseWriter, r *http.Request) {
 
 	tpl.ExecuteTemplate(w, "index.html", nil)
+
+}
+
+// Login this will execute the login page for now
+func Login(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method == "GET" {
+		tpl.ExecuteTemplate(w, "login.html", nil)
+	} else if r.Method == "POST" {
+		r.ParseForm()
+		// logic part of log in
+		fmt.Println("username:", r.Form["username"])
+		fmt.Println("password:", r.Form["password"])
+	} else {
+		http.Error(w, http.StatusText(405), 405)
+		return
+	}
 
 }
