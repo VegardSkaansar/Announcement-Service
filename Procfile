@@ -1,1 +1,1 @@
-web: AnnonceService/cmd
+web: AnnonceService
