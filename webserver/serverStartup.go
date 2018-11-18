@@ -31,7 +31,9 @@ func ServerRequest() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", (func(w http.ResponseWriter, r *http.Request) { http.Redirect(w, r, "/Home", 301) }))
 	r.HandleFunc("/Home", MainPage)
-	r.HandleFunc("/Announce", Routing)
+	r.Handle("/Announce", isAuthorized(Routing))
+	r.HandleFunc("/login", Login)
+	r.HandleFunc("/register", Register)
 
 	log.Fatal(http.ListenAndServe(":"+port, r))
 
@@ -42,15 +44,15 @@ func ServerRequest() {
 // are in this case admin or user
 func ServerStart() {
 	database.GlobalDBAdmin = &database.MongoDB{
-		"mongodb://admin:admin123@ds039311.mlab.com:39311/announce",
-		"announce",
-		"user",
+		DatabaseURL:      "mongodb://admin:admin123@ds039311.mlab.com:39311/announce",
+		DatabaseName:     "announce",
+		DatabaseAnnounce: "user",
 	}
 
 	database.GlobalDBUser = &database.MongoDB{
-		"mongodb://admin:admin123@ds039311.mlab.com:39311/announce",
-		"announce",
-		"user",
+		DatabaseURL:      "mongodb://admin:admin123@ds039311.mlab.com:39311/announce",
+		DatabaseName:     "announce",
+		DatabaseAnnounce: "user",
 	}
 
 	database.GlobalDBUser.Init()
