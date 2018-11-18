@@ -2,6 +2,7 @@ package webserver
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
@@ -63,4 +64,22 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 			return
 		}
 	})
+}
+
+func decodeToken(tokenString string) interface{} {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("There was an error")
+		}
+		return hmacSecret, nil
+	})
+
+	if err != nil {
+		log.Println("Some ERROR")
+		return ""
+	}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims["username"]
+	}
+	return ""
 }

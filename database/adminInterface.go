@@ -39,6 +39,17 @@ func (db *MongoDB) AddUser(person Collection) {
 
 // DeleteUser deletes a user from the db
 func (db *MongoDB) DeleteUser(username string) {
+	session, err := mgo.Dial(db.DatabaseURL)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Remove(bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}})
+
+	if err != nil {
+		log.Printf("Somethings wrong with Remove():%v", err.Error())
+	}
 
 }
 

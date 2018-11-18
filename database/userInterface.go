@@ -14,9 +14,9 @@ var GlobalDBUser StorageAnnouncement
 // add their Annoucements delete or modify
 type StorageAnnouncement interface {
 	Init()
-	AddAnnouncement(ad Announce, name string) bool
-	DeleteAnnouncement(title string) bool
-	ModifyAnnouncement(title string) bool
+	AddAnnouncement(ad Announce, username string) bool
+	DeleteAnnouncement(title string, username string) bool
+	ModifyAnnouncement(ads Announce, username string) bool
 }
 
 // Init test if the connection happend
