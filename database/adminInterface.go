@@ -1,7 +1,7 @@
 package database
 
 import (
-	"fmt"
+	"log"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -18,6 +18,7 @@ type StorageUser interface {
 	AddUser(person Collection)
 	DeleteUser(username string)
 	ExistUser(username string) bool
+	GetUserPassword(username string) string
 }
 
 // AddUser adds a user to the datastructure
@@ -32,7 +33,7 @@ func (db *MongoDB) AddUser(person Collection) {
 	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Insert(person)
 
 	if err != nil {
-		fmt.Printf("Somethings wrong with Insert():%v", err.Error())
+		log.Printf("Somethings wrong with Insert():%v", err.Error())
 	}
 }
 
@@ -50,12 +51,40 @@ func (db *MongoDB) ExistUser(username string) bool {
 	}
 	defer session.Close()
 
-	var result Collection
+	var result []Collection
 
-	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Find(bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}}).One(&result)
+	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Find(bson.M{}).All(&result)
 
 	if err != nil {
 		return false
 	}
-	return true
+	for _, data := range result {
+		if data.Person.Username == username {
+			return true
+		}
+	}
+	return false
+
+}
+
+// GetUserPassword gets the password from a user else an error will be returned
+func (db *MongoDB) GetUserPassword(username string) string {
+	session, err := mgo.Dial(db.DatabaseURL)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	var pass []Collection
+
+	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Find(bson.M{}).All(&pass)
+
+	if err != nil {
+		return ""
+	}
+	for _, data := range pass {
+		if data.Person.Username == username {
+			return data.Person.Password
+		}
+	}
+	return ""
 }
