@@ -20,12 +20,15 @@ func hashAndSalt(pwd string) string {
 // if the hashed string is the same as the password we return true,
 // otherwise we will get false
 func comparePassword(pwd string, hashed string) bool {
-
-	err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(pwd))
+	log.Println(pwd)
+	log.Println(hashed)
+	log.Println(hashAndSalt(pwd))
+	byteHash := []byte(hashed)
+	err := bcrypt.CompareHashAndPassword(byteHash, []byte(pwd))
 	if err != nil {
 		log.Println(err)
 		return false
 	}
-
+	log.Println("password true")
 	return true
 }

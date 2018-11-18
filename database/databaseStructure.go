@@ -35,7 +35,7 @@ type Announce struct {
 // so we will have a user with its information and then
 // have all of the announces this user have posted
 type Collection struct {
-	ObjectID bson.ObjectId `json:"-" bson:"_id"`
-	person   User
-	ads      []Announce
+	ObjectID bson.ObjectId `json:"-" bson:"_id,omitempty"`
+	Person   User
+	Ads      []Announce
 }
