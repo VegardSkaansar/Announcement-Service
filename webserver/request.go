@@ -1,8 +1,13 @@
 package webserver
 
 import (
+	"encoding/json"
 	"fmt"
+	"goprojects/AnnonceService/database"
+	"log"
 	"net/http"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 // url should look like
@@ -23,10 +28,8 @@ import (
 // Routing function will use regex, and redirect or check the urlpath
 // and send the request to right handler
 func Routing(w http.ResponseWriter, r *http.Request) {
-	if TokenMiddleware(w, r) == false {
-		w.Write([]byte(http.StatusText(http.StatusForbidden)))
-		return
-	}
+
+	log.Println("given access to resources")
 
 }
 
@@ -47,9 +50,80 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		// logic part of log in
 		fmt.Println("username:", r.Form["username"])
 		fmt.Println("password:", r.Form["password"])
+
+		if database.GlobalDBAdmin.ExistUser(r.Form["username"][0]) && comparePassword(r.Form["password"][0], database.GlobalDBAdmin.GetUserPassword(r.Form["username"][0])) {
+
+			token, err := createToken(r.Form["username"][0])
+			if err != nil {
+				http.Error(w, "Error: Internal Server Error", 500)
+			}
+			http.SetCookie(w, &http.Cookie{
+				Name:       "Authorization",
+				Value:      token.Token,
+				RawExpires: "0",
+			})
+			JSONResponse(token, w)
+
+		} else {
+			http.Error(w, "This user does not exist", 401)
+			return
+		}
+
 	} else {
 		http.Error(w, http.StatusText(405), 405)
 		return
 	}
 
+}
+
+// Register this html page add a user page
+func Register(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method == "GET" {
+		tpl.ExecuteTemplate(w, "register.html", nil)
+	} else if r.Method == "POST" {
+		r.ParseForm()
+
+		if database.GlobalDBAdmin.ExistUser(r.Form["username"][0]) {
+			http.Error(w, "This Username is already in use", 409)
+			return
+		}
+		log.Println("New user")
+		log.Println("username:", r.Form["username"])
+		log.Println("password:", r.Form["password"])
+		log.Println("first name:", r.Form["firstName"])
+		log.Println("last name:", r.Form["lastName"])
+		log.Println("Birth:", r.Form["year"])
+
+		newUser := database.User{
+			Username:  r.Form["username"][0],
+			Password:  hashAndSalt(r.Form["password"][0]),
+			FirstName: r.Form["firstName"][0],
+			LastName:  r.Form["lastName"][0],
+			Year:      r.Form["year"][0],
+			Admin:     false,
+		}
+
+		var ann []database.Announce
+		collection := database.Collection{
+			ObjectID: bson.NewObjectId(),
+			Person:   newUser,
+			Ads:      ann,
+		}
+		database.GlobalDBAdmin.AddUser(collection)
+	}
+}
+
+// JSONResponse a helper function
+func JSONResponse(response interface{}, w http.ResponseWriter) {
+
+	json, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(json)
 }
