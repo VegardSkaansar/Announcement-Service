@@ -2,7 +2,6 @@ package webserver
 
 import (
 	"fmt"
-	"goprojects/AnnonceService/database"
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
@@ -19,54 +18,54 @@ type JwtToken struct {
 
 // createToken takes a username and a password and uses hmac encoding and encodes it with the secret word
 // this will only contain the username for several reasons. its bad to involve password even if it is encrypted
-func createToken(username string) JwtToken {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": username,
-	})
+func createToken(username string) (JwtToken, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	claims := token.Claims.(jwt.MapClaims)
+
+	claims["authorized"] = true
+	claims["username"] = username
 
 	tokenString, err := token.SignedString(hmacSecret)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Errorf("Something didnt go well: %s", err.Error())
+		return JwtToken{}, err
 	}
 
-	return JwtToken{tokenString}
+	return JwtToken{tokenString}, nil
 }
 
-// decodeToken takes a token from the header of a client and decodes it
-func decodeToken(token string) string {
-	data, err := jwt.Parse(token, func(tokenString *jwt.Token) (interface{}, error) {
+func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
 
-		if _, ok := tokenString.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", tokenString.Header["alg"])
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		CookieName, err := r.Cookie("Authorization")
+
+		if err != nil {
+			http.Error(w, "Not Authorized", http.StatusForbidden)
+			return
 		}
-		return hmacSecret, nil
+
+		if CookieName.Value != "" {
+
+			token, err := jwt.Parse(CookieName.Value, func(token *jwt.Token) (interface{}, error) {
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, fmt.Errorf("There was an error")
+				}
+				return hmacSecret, nil
+			})
+
+			if err != nil {
+				http.Error(w, err.Error(), 500)
+				return
+			}
+
+			if token.Valid {
+				endpoint(w, r)
+			}
+		} else {
+			http.Error(w, "Not Authorized", http.StatusForbidden)
+			return
+		}
 	})
-	if err != nil {
-		return ""
-	}
-
-	if claims, ok := data.Claims.(jwt.MapClaims); ok && data.Valid {
-		return claims["username"].(string)
-	}
-	return ""
-
-}
-
-// TokenMiddleware checks if the person are logged in or not
-func TokenMiddleware(w http.ResponseWriter, r *http.Request) bool {
-
-	// Get the token from Autherization header
-	token := r.Header.Get("Authentication")
-	jwtTokens := decodeToken(token)
-
-	if database.GlobalDBAdmin.ExistUser(jwtTokens) {
-		return true
-	}
-	// if this username doesnt exist either an deleted accounts token
-	// or someone trying to get access to an account they shouldnt
-	// get access to
-	http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
-	return false
-
 }
