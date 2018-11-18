@@ -1,1 +1,1 @@
-web: AnnonceService/templates
+web: AnnonceService

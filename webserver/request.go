@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"goprojects/AnnonceService/database"
 	"goprojects/AnnonceService/templates"
+	"html/template"
 	"log"
 	"net/http"
 
@@ -46,7 +47,13 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 func Login(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		templates.Login(w)
+		//templates.Login(w)
+		tpl, err := template.ParseFiles("templates/login.html")
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+		err = tpl.Execute(w, nil)
 	} else if r.Method == "POST" {
 		r.ParseForm()
 		// logic part of log in

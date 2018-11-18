@@ -8,7 +8,7 @@ import (
 
 // Index s
 func Index(w http.ResponseWriter) {
-	tpl, err := template.ParseFiles("index.html")
+	tpl, err := template.ParseFiles("templates/index.html")
 
 	if err != nil {
 		log.Fatalln(err)
@@ -18,7 +18,7 @@ func Index(w http.ResponseWriter) {
 
 // Login s
 func Login(w http.ResponseWriter) {
-	tpl, err := template.ParseFiles("login.html")
+	tpl, err := template.ParseFiles("templates/login.html")
 
 	if err != nil {
 		log.Fatalln(err)
@@ -28,7 +28,7 @@ func Login(w http.ResponseWriter) {
 
 // Announce g
 func Announce(w http.ResponseWriter) {
-	tpl, err := template.ParseFiles("index.html")
+	tpl, err := template.ParseFiles("templates/announce.html")
 
 	if err != nil {
 		log.Fatalln(err)
@@ -38,7 +38,7 @@ func Announce(w http.ResponseWriter) {
 
 // Register g
 func Register(w http.ResponseWriter) {
-	tpl, err := template.ParseFiles("index.html")
+	tpl, err := template.ParseFiles("templates/index.html")
 
 	if err != nil {
 		log.Fatalln(err)
