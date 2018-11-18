@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/gorilla/mux"
 )
@@ -14,11 +15,12 @@ var tpl *template.Template
 
 // Init initialise html directory
 func Init() {
-	//	wd, err := os.Getwd()
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	tpl = template.Must(template.ParseGlob("github.com/VegardSkaansar/Announcement-Service/html*.html"))
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	parent := filepath.Dir(wd)
+	tpl = template.Must(template.ParseGlob(parent + "html/*.html"))
 }
 
 // ServerRequest takes care of the routing
