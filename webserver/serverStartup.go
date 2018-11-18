@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"github.com/gorilla/mux"
 )
@@ -19,8 +18,7 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
-	parent := filepath.Dir(wd)
-	tpl = template.Must(template.ParseGlob(parent + "/src/goprojects/AnnonceService/html/*.html"))
+	tpl = template.Must(template.ParseGlob("github.com/VegardSkaansar/Announcement-Service/html*.html"))
 }
 
 // ServerRequest takes care of the routing
@@ -30,8 +28,8 @@ func ServerRequest() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", (func(w http.ResponseWriter, r *http.Request) { http.Redirect(w, r, "/Home", 301) }))
-	r.HandleFunc("/Home", MainPage)
-	r.Handle("/Announce", isAuthorized(Routing))
+	r.HandleFunc("/home", MainPage)
+	r.Handle("/announce", isAuthorized(Routing))
 	r.HandleFunc("/login", Login)
 	r.HandleFunc("/register", Register)
 
