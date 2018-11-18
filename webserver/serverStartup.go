@@ -15,7 +15,7 @@ var tpl *template.Template
 // Init initialise html directory
 func Init() {
 
-	tpl = template.Must(template.ParseGlob("html/*.html"))
+	tpl = template.Must(template.ParseGlob("templates"))
 }
 
 // ServerRequest takes care of the routing

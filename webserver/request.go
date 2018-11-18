@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"goprojects/AnnonceService/database"
+	"goprojects/AnnonceService/templates"
 	"log"
 	"net/http"
 
@@ -28,10 +29,9 @@ import (
 // Routing function will use regex, and redirect or check the urlpath
 // and send the request to right handler
 func Routing(w http.ResponseWriter, r *http.Request) {
-	// CookieValue := ReadCookie(w, r)
-	//	username := decodeToken(CookieValue)
-	// array := []string{"vegard", "abu", "geir"}
-	tpl.ExecuteTemplate(w, "noasAnnonser.html", nil)
+	//CookieValue := ReadCookie(w, r)
+	//username := decodeToken(CookieValue)
+	templates.Announce(w)
 	log.Println("given access to resources")
 
 }
@@ -39,14 +39,14 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 // MainPage Displays this page if your not logged in
 func MainPage(w http.ResponseWriter, r *http.Request) {
 
-	//	tpl.ExecuteTemplate(w, "index.html", nil)
+	templates.Index(w)
 }
 
 // Login this will execute the login page for now
 func Login(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		tpl.ExecuteTemplate(w, "login.html", nil)
+		templates.Login(w)
 	} else if r.Method == "POST" {
 		r.ParseForm()
 		// logic part of log in
@@ -78,7 +78,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func Register(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		tpl.ExecuteTemplate(w, "register.html", nil)
+		templates.Register(w)
 	} else if r.Method == "POST" {
 		r.ParseForm()
 
