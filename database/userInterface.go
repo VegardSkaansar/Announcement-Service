@@ -1,6 +1,9 @@
 package database
 
-import mgo "gopkg.in/mgo.v2"
+import (
+	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+)
 
 // GlobalDBUser both admin and normal user should be able to interact with this page
 // depending on their role, a admin can modify which user announcement the admins wants.
@@ -11,7 +14,7 @@ var GlobalDBUser StorageAnnouncement
 // add their Annoucements delete or modify
 type StorageAnnouncement interface {
 	Init()
-	AddAnnouncement(ad Announce) bool
+	AddAnnouncement(ad Announce, name string) bool
 	DeleteAnnouncement(title string) bool
 	ModifyAnnouncement(title string) bool
 }
@@ -28,19 +31,58 @@ func (db *MongoDB) Init() {
 }
 
 // AddAnnouncement adds a users announce
-func (db *MongoDB) AddAnnouncement(ad Announce) bool {
+func (db *MongoDB) AddAnnouncement(ad Announce, username string) bool {
+	session, err := mgo.Dial(db.DatabaseURL)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	change := bson.M{"$push": bson.M{"ads": ad}}
+	match := bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}}
 
+	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
+
+	if err != nil {
+		return false
+	}
 	return true
 }
 
 // DeleteAnnouncement takes a announce with a title and deletes it
-func (db *MongoDB) DeleteAnnouncement(title string) bool {
+func (db *MongoDB) DeleteAnnouncement(title string, username string) bool {
 
+	session, err := mgo.Dial(db.DatabaseURL)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	change := bson.M{"ads": bson.M{"$pull": bson.M{"title": title}}}
+	match := bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}}
+
+	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
+
+	if err != nil {
+		return false
+	}
 	return true
 }
 
 // ModifyAnnouncement Takes a title and modifies what information the user wants
-func (db *MongoDB) ModifyAnnouncement(title string) bool {
+// doesnt work yet will work when discussed
+func (db *MongoDB) ModifyAnnouncement(ads Announce, username string) bool {
 
+	session, err := mgo.Dial(db.DatabaseURL)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	change := bson.M{"ads": bson.M{"$set": bson.M{"title": ads.Title}}}
+	match := bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}}
+
+	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
+
+	if err != nil {
+		return false
+	}
 	return true
 }
