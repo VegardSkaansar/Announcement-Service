@@ -14,10 +14,10 @@ var tpl *template.Template
 
 // Init initialise html directory
 func Init() {
-	wd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
+	//	wd, err := os.Getwd()
+	//	if err != nil {
+	//		panic(err)
+	//	}
 	tpl = template.Must(template.ParseGlob("github.com/VegardSkaansar/Announcement-Service/html*.html"))
 }
 
