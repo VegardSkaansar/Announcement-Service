@@ -57,11 +57,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				http.Error(w, "Error: Internal Server Error", 500)
 			}
-			http.SetCookie(w, &http.Cookie{
-				Name:       "Authorization",
-				Value:      token.Token,
-				RawExpires: "0",
-			})
+			SetCookie(token.Token, w, r)
 			JSONResponse(token, w)
 
 		} else {

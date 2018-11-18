@@ -39,16 +39,11 @@ func createToken(username string) (JwtToken, error) {
 func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		CookieName, err := r.Cookie("Authorization")
+		CookieValue := ReadCookie(w, r)
 
-		if err != nil {
-			http.Error(w, "Not Authorized", http.StatusForbidden)
-			return
-		}
+		if CookieValue != "" {
 
-		if CookieName.Value != "" {
-
-			token, err := jwt.Parse(CookieName.Value, func(token *jwt.Token) (interface{}, error) {
+			token, err := jwt.Parse(CookieValue, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("There was an error")
 				}
