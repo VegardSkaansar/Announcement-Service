@@ -28,9 +28,10 @@ import (
 // Routing function will use regex, and redirect or check the urlpath
 // and send the request to right handler
 func Routing(w http.ResponseWriter, r *http.Request) {
-	CookieValue := ReadCookie(w, r)
-	username := decodeToken(CookieValue)
-	tpl.ExecuteTemplate(w, "announce.html", username)
+	// CookieValue := ReadCookie(w, r)
+	//	username := decodeToken(CookieValue)
+	// array := []string{"vegard", "abu", "geir"}
+	tpl.ExecuteTemplate(w, "noasAnnonser.html", nil)
 	log.Println("given access to resources")
 
 }
@@ -38,7 +39,7 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 // MainPage Displays this page if your not logged in
 func MainPage(w http.ResponseWriter, r *http.Request) {
 
-	tpl.ExecuteTemplate(w, "index.html", nil)
+	//	tpl.ExecuteTemplate(w, "index.html", nil)
 }
 
 // Login this will execute the login page for now

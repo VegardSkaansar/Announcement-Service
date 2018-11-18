@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"github.com/gorilla/mux"
 )
@@ -15,12 +14,8 @@ var tpl *template.Template
 
 // Init initialise html directory
 func Init() {
-	wd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	parent := filepath.Dir(wd)
-	tpl = template.Must(template.ParseGlob(parent + "/src/goprojects/AnnonceService/html/*.html"))
+
+	tpl = template.Must(template.ParseGlob("html/*.html"))
 }
 
 // ServerRequest takes care of the routing

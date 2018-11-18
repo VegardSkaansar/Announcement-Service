@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+
+    <h1>Your Announces</h1><br>
+    {{ range $key, $value := . }}
+   <li><strong>{{ $key }}</strong>: {{ $value }}</li>
+{{ end }}
+
+</body>
+</html> 
