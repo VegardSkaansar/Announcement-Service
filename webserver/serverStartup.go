@@ -20,7 +20,7 @@ func Init() {
 		panic(err)
 	}
 	parent := filepath.Dir(wd)
-	tpl = template.Must(template.ParseGlob(parent + "html/*.html"))
+	tpl = template.Must(template.ParseGlob(parent + "/src/goprojects/AnnonceService/html/*.html"))
 }
 
 // ServerRequest takes care of the routing
