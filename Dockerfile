@@ -15,6 +15,6 @@ LABEL maintainer "vegard.skaansar@gmail.com"
 
 WORKDIR /
 
-COPY --from=builder /go/src/github.com/VegardSkaansar/goprojects/announce/announcement .
+COPY --from=builder /go/src/github.com/VegardSkaansar/Announcement-Service/announcement .
 
 CMD ["/announcement"]
