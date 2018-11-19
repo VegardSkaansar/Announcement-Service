@@ -47,7 +47,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		//templates.Login(w)
-		ExecuteHTML(w, "templates/AbuHtml/noasLogin.html", nil)
+		ExecuteHTML(w, "AbuHtml/noasLogin.html", nil)
 	} else if r.Method == "POST" {
 		r.ParseForm()
 		// logic part of log in
