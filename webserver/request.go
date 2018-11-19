@@ -32,7 +32,7 @@ import (
 func Routing(w http.ResponseWriter, r *http.Request) {
 	//CookieValue := ReadCookie(w, r)
 	//username := decodeToken(CookieValue)
-	ExecuteHTML(w, "templates/announce.html", nil)
+	ExecuteHTML(w, "AbuHtml/noasAnnonser.html", nil)
 	log.Println("given access to resources")
 
 }
