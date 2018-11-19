@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/VegardSkaansar/Announcement-Service/database"
+	"github.com/VegardSkansar/Announcement-Service/database"
 
 	"github.com/gorilla/mux"
 )

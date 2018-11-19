@@ -3,10 +3,11 @@ package webserver
 import (
 	"encoding/json"
 	"fmt"
-	"goprojects/announce/database"
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/VegardSkaansar/Announcement-Service/database"
 
 	"gopkg.in/mgo.v2/bson"
 )
