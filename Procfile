@@ -1,1 +1,1 @@
-web: announce
+web: Announcement-Service
