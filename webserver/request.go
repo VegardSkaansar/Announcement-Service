@@ -31,7 +31,7 @@ import (
 func Routing(w http.ResponseWriter, r *http.Request) {
 	//CookieValue := ReadCookie(w, r)
 	//username := decodeToken(CookieValue)
-	ExecuteHTML(w, "templates/announce.html")
+	ExecuteHTML(w, "templates/announce.html", nil)
 	log.Println("given access to resources")
 
 }
@@ -39,7 +39,7 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 // MainPage Displays this page if your not logged in
 func MainPage(w http.ResponseWriter, r *http.Request) {
 
-	ExecuteHTML(w, "templates/index.html")
+	ExecuteHTML(w, "templates/index.html", nil)
 }
 
 // Login this will execute the login page for now
@@ -47,7 +47,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		//templates.Login(w)
-		ExecuteHTML(w, "templates/login.html")
+		ExecuteHTML(w, "templates/login.html", nil)
 	} else if r.Method == "POST" {
 		r.ParseForm()
 		// logic part of log in
@@ -79,7 +79,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func Register(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		ExecuteHTML(w, "templates/register.html")
+		ExecuteHTML(w, "templates/register.html", nil)
 	} else if r.Method == "POST" {
 		r.ParseForm()
 
@@ -94,6 +94,10 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		log.Println("last name:", r.Form["lastName"])
 		log.Println("Birth:", r.Form["year"])
 
+		if r.Form["password"][0] != r.Form["confirm_password"][0] {
+			ExecuteHTML(w, "templates/register.html", "password doesnt match")
+			return
+		}
 		newUser := database.User{
 			Username:  r.Form["username"][0],
 			Password:  hashAndSalt(r.Form["password"][0]),
@@ -128,11 +132,11 @@ func JSONResponse(response interface{}, w http.ResponseWriter) {
 }
 
 // ExecuteHTML parising a template and execute it
-func ExecuteHTML(w http.ResponseWriter, path string) {
+func ExecuteHTML(w http.ResponseWriter, path string, message interface{}) {
 	tpl, err := template.ParseFiles(path)
 
 	if err != nil {
 		log.Fatalln(err)
 	}
-	err = tpl.Execute(w, nil)
+	err = tpl.Execute(w, message)
 }
