@@ -1,4 +1,4 @@
-module goprojects/announce
+module github.com/VegardSkaansar/Announcement-Service
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

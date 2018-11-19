@@ -1,10 +1,11 @@
 package webserver
 
 import (
-	"goprojects/announce/database"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/VegardSkaansar/Announcement-Service/database"
 
 	"github.com/gorilla/mux"
 )
@@ -20,6 +21,8 @@ func ServerRequest() {
 	}))
 	r.HandleFunc("/home", MainPage)
 	r.Handle("/announce", isAuthorized(Routing))
+	//r.Handle("/announce/myads", myAds)
+	//r.Handle("/announce/allads", allAds)
 	r.HandleFunc("/login", Login)
 	r.HandleFunc("/register", Register)
 
