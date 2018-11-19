@@ -19,7 +19,7 @@ type StorageUser interface {
 	DeleteUser(username string)
 	ExistUser(username string) bool
 	GetUserPassword(username string) string
-	GetUser(username string) Collection
+	GetUser(username string) []Announce
 }
 
 // AddUser adds a user to the datastructure
