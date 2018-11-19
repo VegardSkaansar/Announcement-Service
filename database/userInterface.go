@@ -38,7 +38,7 @@ func (db *MongoDB) AddAnnouncement(ad Announce, username string) bool {
 	}
 	defer session.Close()
 	change := bson.M{"$push": bson.M{"ads": ad}}
-	match := bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}}
+	match := bson.M{"person": bson.M{"username": username}}
 
 	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
 
@@ -57,7 +57,7 @@ func (db *MongoDB) DeleteAnnouncement(title string, username string) bool {
 	}
 	defer session.Close()
 	change := bson.M{"ads": bson.M{"$pull": bson.M{"title": title}}}
-	match := bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}}
+	match := bson.M{"person": bson.M{"username": username}}
 
 	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
 
