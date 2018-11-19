@@ -13,6 +13,14 @@ type MongoDB struct {
 // User is the db structure of all the users in the server
 // Role and password will be stored in db but no other way to get
 // this information from the db
+type User struct {
+	Username  string `json:"username" bson:"username"`
+	Password  string `json:"-" bson:"password"`
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
+	Year      string `json:"year"`
+	Admin     bool   `json:"-" bson:"admin"`
+}
 
 // Announce is the db structure for all the announcement given from
 // a user
@@ -26,12 +34,7 @@ type Announce struct {
 // so we will have a user with its information and then
 // have all of the announces this user have posted
 type Collection struct {
-	ObjectID  bson.ObjectId `json:"-" bson:"_id,omitempty"`
-	Username  string        `json:"username" bson:"username"`
-	Password  string        `json:"-" bson:"password"`
-	FirstName string        `json:"firstname"`
-	LastName  string        `json:"lastname"`
-	Year      string        `json:"year"`
-	Admin     bool          `json:"-" bson:"admin"`
-	Ads       []Announce    `bson:"ads"`
+	ObjectID bson.ObjectId `json:"-" bson:"_id,omitempty"`
+	Person   User          `bson:"person"`
+	Ads      []Announce    `bson:"ads"`
 }

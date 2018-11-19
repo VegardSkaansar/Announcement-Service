@@ -19,7 +19,7 @@ type StorageUser interface {
 	DeleteUser(username string)
 	ExistUser(username string) bool
 	GetUserPassword(username string) string
-	GetUser(username string) []Announce
+	GetUser(username string) Collection
 }
 
 // AddUser adds a user to the datastructure
@@ -46,7 +46,7 @@ func (db *MongoDB) DeleteUser(username string) {
 	}
 	defer session.Close()
 
-	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Remove(bson.M{"username": username})
+	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Remove(bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}})
 
 	if err != nil {
 		log.Printf("Somethings wrong with Remove():%v", err.Error())
@@ -71,7 +71,7 @@ func (db *MongoDB) ExistUser(username string) bool {
 		return false
 	}
 	for _, data := range result {
-		if data.Username == username {
+		if data.Person.Username == username {
 			return true
 		}
 	}
@@ -94,8 +94,8 @@ func (db *MongoDB) GetUserPassword(username string) string {
 		return ""
 	}
 	for _, data := range pass {
-		if data.Username == username {
-			return data.Password
+		if data.Person.Username == username {
+			return data.Person.Password
 		}
 	}
 	return ""
@@ -116,7 +116,7 @@ func (db *MongoDB) GetUser(username string) []Announce {
 		return []Announce{}
 	}
 	for _, data := range pass {
-		if data.Username == username {
+		if data.Person.Username == username {
 			return data.Ads
 		}
 	}

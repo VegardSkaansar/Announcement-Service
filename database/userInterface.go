@@ -37,22 +37,15 @@ func (db *MongoDB) AddAnnouncement(ad Announce, username string) bool {
 		panic(err)
 	}
 	defer session.Close()
-	var result []Collection
+	change := bson.M{"$push": bson.M{"ads": ad}}
+	match := bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}}
 
-	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Find(bson.M{}).All(&result)
+	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
 
 	if err != nil {
 		return false
 	}
-	for _, data := range result {
-		if data.Username == username {
-			data.Ads = append(data.Ads, ad)
-			GlobalDBAdmin.DeleteUser(username)
-			GlobalDBAdmin.AddUser(data)
-			return true
-		}
-	}
-	return false
+	return true
 }
 
 // DeleteAnnouncement takes a announce with a title and deletes it
