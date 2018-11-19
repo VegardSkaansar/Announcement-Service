@@ -3,8 +3,7 @@ package webserver
 import (
 	"encoding/json"
 	"fmt"
-	"goprojects/AnnonceService/database"
-	"goprojects/AnnonceService/templates"
+	"goprojects/announce/database"
 	"html/template"
 	"log"
 	"net/http"
@@ -32,7 +31,7 @@ import (
 func Routing(w http.ResponseWriter, r *http.Request) {
 	//CookieValue := ReadCookie(w, r)
 	//username := decodeToken(CookieValue)
-	templates.Announce(w)
+	ExecuteHTML(w, "templates/announce.html")
 	log.Println("given access to resources")
 
 }
@@ -40,7 +39,7 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 // MainPage Displays this page if your not logged in
 func MainPage(w http.ResponseWriter, r *http.Request) {
 
-	templates.Index(w)
+	ExecuteHTML(w, "templates/index.html")
 }
 
 // Login this will execute the login page for now
@@ -48,12 +47,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		//templates.Login(w)
-		tpl, err := template.ParseFiles("templates/login.html")
-
-		if err != nil {
-			log.Fatalln(err)
-		}
-		err = tpl.Execute(w, nil)
+		ExecuteHTML(w, "templates/login.html")
 	} else if r.Method == "POST" {
 		r.ParseForm()
 		// logic part of log in
@@ -85,7 +79,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func Register(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		templates.Register(w)
+		ExecuteHTML(w, "templates/register.html")
 	} else if r.Method == "POST" {
 		r.ParseForm()
 
@@ -131,4 +125,14 @@ func JSONResponse(response interface{}, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(json)
+}
+
+// ExecuteHTML parising a template and execute it
+func ExecuteHTML(w http.ResponseWriter, path string) {
+	tpl, err := template.ParseFiles(path)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+	err = tpl.Execute(w, nil)
 }

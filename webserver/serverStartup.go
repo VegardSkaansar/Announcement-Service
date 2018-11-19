@@ -1,8 +1,7 @@
 package webserver
 
 import (
-	"goprojects/AnnonceService/database"
-	"html/template"
+	"goprojects/announce/database"
 	"log"
 	"net/http"
 	"os"
@@ -10,21 +9,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var tpl *template.Template
-
-// Init initialise html directory
-func Init() {
-
-	tpl = template.Must(template.ParseGlob("templates"))
-}
-
 // ServerRequest takes care of the routing
 // and sends the user to right place
 func ServerRequest() {
 	port := os.Getenv("PORT")
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", (func(w http.ResponseWriter, r *http.Request) { http.Redirect(w, r, "/Home", 301) }))
+	r.HandleFunc("/", (func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/home", 301)
+	}))
 	r.HandleFunc("/home", MainPage)
 	r.Handle("/announce", isAuthorized(Routing))
 	r.HandleFunc("/login", Login)
