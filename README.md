@@ -14,6 +14,7 @@ Some issues we met during development were:
 - A few problems with building the application in heroku.
 - We were unable to implement the usage of OpenStack
 - We ran into an issue with running application, in that we innitally ran it from go/bin rather than go/src/[repository name]. Which led to a number of time consumed.
+- We had considerable difficulty with implementing the browing functionality of the ads. We could get the data from a POST request easily, but adding it to the database, and then writing it to the screen proved very difficult
 
 Some things that went well:
 - Implementing mongoDB went relatively smoothly, and being able to get data from the database.
@@ -35,7 +36,9 @@ How pages are loaded up, and passing of information from the database over to th
 ### Total work hours.
 
 Vegard Skaansar: Roughly 25h spent.
+
 Abubakar Ahmed Yusuf: 18h spent.
+
 Group total time: 43h.
 
 
