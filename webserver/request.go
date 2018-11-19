@@ -142,6 +142,23 @@ func MyAds(w http.ResponseWriter, r *http.Request) {
 
 		ExecuteHTML(w, "AbuHtml/myAds.html", array)
 
+	} else if r.Method == "POST" {
+		r.ParseForm()
+
+		CookieValue := ReadCookie(w, r)
+		username := decodeToken(CookieValue)
+
+		newAd := database.Announce{
+			Title:       r.Form["Title"][0],
+			Description: r.Form["Description"][0],
+			Cost:        r.Form["Cost"][0],
+		}
+
+		ok := database.GlobalDBUser.AddAnnouncement(newAd, username.(string))
+
+		if ok {
+			http.Redirect(w, r, "/announce/myads", 200)
+		}
 	}
 }
 

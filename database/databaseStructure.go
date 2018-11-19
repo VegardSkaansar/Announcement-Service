@@ -28,7 +28,7 @@ type Announce struct {
 	Title       string        `json:"title" bson:"title"`
 	Description string        `json:"description" bson:"description"`
 	ObjectID    bson.ObjectId `json:"-" bson:"_id"`
-	Cost        int           `json:"cost"`
+	Cost        string        `json:"cost"`
 }
 
 // Collection is how we will store our data in the db
