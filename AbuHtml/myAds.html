@@ -21,6 +21,9 @@
 				margin: auto;
 				background-color: white;
 			}
+			.adData{
+				width: 100%;
+			}
 		</style>
 	</head>
 	<body>
@@ -31,9 +34,10 @@
 			<ul>
 			{{if .}}
 				{{range .}}
-					<li>{{.Title}}</li>
-					<li>{{.Description}}</li>
-					<li>{{.Cost}}</li>
+					<li class="adData">Title: {{.Title}}</li>
+					<li class="adData">{{.Description}}</li>
+					<li class="adData">Cost: {{.Cost}}</li>
+					<br/>
 				{{end}}
 			{{end}}
 			</ul>

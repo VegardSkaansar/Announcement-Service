@@ -37,3 +37,7 @@ How pages are loaded up, and passing of information from the database over to th
 Vegard Skaansar: Roughly 25h spent.
 Abubakar Ahmed Yusuf: 18h spent.
 Group total time: 43h.
+
+
+### Heroku link
+Our hero page can be found [here](https://announce-service.herokuapp.com/home)

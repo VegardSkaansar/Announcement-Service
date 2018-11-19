@@ -21,6 +21,9 @@
 				margin: auto;
 				background-color: white;
 			}
+			.adData{
+				width: 100%;
+			}
 		</style>
 	</head>
 	<body>
@@ -28,7 +31,16 @@
 			<h1 class="head"><b>All ads</b></h1><br/>
 		</header>
 		<div  name="ads" class="container" style="background-color: rgba(160,160,160,0.75); text-align: center;">
-			
+			<ul>
+			{{if .}}
+				{{range .}}
+					<li class="adData">Title: {{.Title}}</li>
+					<li class="adData">{{.Description}}</li>
+					<li class="adData">Cost: {{.Cost}}</li>
+					<br/>
+				{{end}}
+			{{end}}
+			</ul>
 		</div>
 	</body>
 </html>
