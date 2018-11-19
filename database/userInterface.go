@@ -45,6 +45,7 @@ func (db *MongoDB) AddAnnouncement(ad Announce, username string) bool {
 	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
 
 	if err != nil {
+		log.Println("LOL")
 		return false
 	}
 	return true
@@ -64,7 +65,6 @@ func (db *MongoDB) DeleteAnnouncement(title string, username string) bool {
 	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
 
 	if err != nil {
-		log.Println("LOL")
 		return false
 	}
 	return true
