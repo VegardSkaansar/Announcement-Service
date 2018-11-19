@@ -21,8 +21,8 @@ func ServerRequest() {
 	}))
 	r.HandleFunc("/home", MainPage)
 	r.Handle("/announce", isAuthorized(Routing))
-	//r.Handle("/announce/myads", myAds)
-	//r.Handle("/announce/allads", allAds)
+	r.HandleFunc("/announce/myads", MyAds)
+	r.HandleFunc("/announce/allads", AllAds)
 	r.HandleFunc("/login", Login)
 	r.HandleFunc("/register", Register)
 

@@ -19,6 +19,7 @@ type StorageUser interface {
 	DeleteUser(username string)
 	ExistUser(username string) bool
 	GetUserPassword(username string) string
+	GetUser(username string) []Announce
 }
 
 // AddUser adds a user to the datastructure
@@ -98,4 +99,26 @@ func (db *MongoDB) GetUserPassword(username string) string {
 		}
 	}
 	return ""
+}
+
+//GetUser gets the user
+func (db *MongoDB) GetUser(username string) []Announce {
+	session, err := mgo.Dial(db.DatabaseURL)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	var pass []Collection
+
+	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Find(bson.M{}).All(&pass)
+
+	if err != nil {
+		return []Announce{}
+	}
+	for _, data := range pass {
+		if data.Person.Username == username {
+			return data.Ads
+		}
+	}
+	return []Announce{}
 }

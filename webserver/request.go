@@ -132,6 +132,19 @@ func JSONResponse(response interface{}, w http.ResponseWriter) {
 	w.Write(json)
 }
 
+// MyAds you here from this page modify or delete or add your annouces
+func MyAds(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		CookieValue := ReadCookie(w, r)
+		username := decodeToken(CookieValue)
+
+		array := database.GlobalDBAdmin.GetUser(username.(string))
+
+		ExecuteHTML(w, "AbuHtml/myAds.html", array)
+
+	}
+}
+
 // ExecuteHTML parising a template and execute it
 func ExecuteHTML(w http.ResponseWriter, path string, message interface{}) {
 	tpl, err := template.ParseFiles(path)
