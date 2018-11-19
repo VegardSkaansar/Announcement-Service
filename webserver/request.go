@@ -99,6 +99,14 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			ExecuteHTML(w, "templates/register.html", "password doesnt match")
 			return
 		}
+		newUser := database.User{
+			Username:  r.Form["username"][0],
+			Password:  hashAndSalt(r.Form["password"][0]),
+			FirstName: r.Form["firstName"][0],
+			LastName:  r.Form["lastName"][0],
+			Year:      r.Form["year"][0],
+			Admin:     false,
+		}
 
 		var ann []database.Announce
 
@@ -115,16 +123,10 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 		ann = append(ann, n1)
 		ann = append(ann, n2)
-
 		collection := database.Collection{
-			ObjectID:  bson.NewObjectId(),
-			Username:  r.Form["username"][0],
-			Password:  hashAndSalt(r.Form["password"][0]),
-			FirstName: r.Form["firstName"][0],
-			LastName:  r.Form["lastName"][0],
-			Year:      r.Form["year"][0],
-			Admin:     false,
-			Ads:       ann,
+			ObjectID: bson.NewObjectId(),
+			Person:   newUser,
+			Ads:      ann,
 		}
 		database.GlobalDBAdmin.AddUser(collection)
 	}
