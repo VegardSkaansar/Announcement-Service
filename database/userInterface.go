@@ -1,6 +1,8 @@
 package database
 
 import (
+	"log"
+
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -62,6 +64,7 @@ func (db *MongoDB) DeleteAnnouncement(title string, username string) bool {
 	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
 
 	if err != nil {
+		log.Println("LOL")
 		return false
 	}
 	return true
