@@ -36,5 +36,5 @@ type Announce struct {
 type Collection struct {
 	ObjectID bson.ObjectId `json:"-" bson:"_id,omitempty"`
 	Person   User
-	Ads      []Announce
+	Ads      []Announce `bson:"ads"`
 }
