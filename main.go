@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Announcement-Service/webserver"
+	"goprojects/announce/webserver"
 )
 
 // This is the main and are supposed to delegate the work to the other packages
