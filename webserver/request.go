@@ -109,6 +109,20 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var ann []database.Announce
+
+		n1 := database.Announce{
+			Title:       "test",
+			Description: "test",
+			Cost:        "10",
+		}
+		n2 := database.Announce{
+			Title:       "test",
+			Description: "test",
+			Cost:        "10",
+		}
+
+		ann = append(ann, n1)
+		ann = append(ann, n2)
 		collection := database.Collection{
 			ObjectID: bson.NewObjectId(),
 			Person:   newUser,
