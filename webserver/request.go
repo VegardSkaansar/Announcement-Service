@@ -157,7 +157,7 @@ func MyAds(w http.ResponseWriter, r *http.Request) {
 		ok := database.GlobalDBUser.AddAnnouncement(newAd, username.(string))
 
 		if ok {
-			http.Redirect(w, r, "/announce/myads", 200)
+			http.Redirect(w, r, "/myads", 301)
 		}
 	}
 }
