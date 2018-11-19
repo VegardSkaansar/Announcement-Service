@@ -45,7 +45,7 @@ func (db *MongoDB) AddAnnouncement(ad Announce, username string) bool {
 		return false
 	}
 	for _, data := range result {
-		if data.Person.Username == username {
+		if data.Username == username {
 			data.Ads = append(data.Ads, ad)
 			GlobalDBAdmin.DeleteUser(username)
 			GlobalDBAdmin.AddUser(data)
