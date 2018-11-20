@@ -75,7 +75,7 @@ func (db *MongoDB) UserAnnouncement(ID bson.ObjectId) []Announce {
 	defer session.Close()
 
 	var ann []Announce
-	err = session.DB(db.DatabaseName).C(db.DatabaseName).Find(bson.M{"id": ID}).All(&ann)
+	err = session.DB(db.DatabaseName).C(db.DatabaseName).Find(bson.M{"_id": ID}).All(&ann)
 	log.Println(ann)
 	if err != nil {
 		return []Announce{}
