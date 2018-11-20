@@ -29,5 +29,5 @@ type Announce struct {
 	Title       string        `json:"title"`
 	Description string        `json:"description"`
 	Cost        string        `json:"cost"`
-	UserID      bson.ObjectId `json:"_id"`
+	UserID      bson.ObjectId `json:"userid"`
 }
