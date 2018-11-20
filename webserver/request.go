@@ -63,14 +63,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			}
 			SetCookie(token.Token, w, r)
 			JSONResponse(token, w)
+			http.Redirect(w, r, "/announce", 301)
 
 		} else {
 			http.Error(w, "This user does not exist", 401)
+			http.Redirect(w, r, "/login", 301)
 			return
 		}
 
 	} else {
 		http.Error(w, http.StatusText(405), 405)
+		http.Redirect(w, r, "/home", 301)
 		return
 	}
 
