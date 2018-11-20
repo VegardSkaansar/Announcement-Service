@@ -1,6 +1,8 @@
 package database
 
 import (
+	"log"
+
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -74,7 +76,7 @@ func (db *MongoDB) UserAnnouncement(ID bson.ObjectId) []Announce {
 
 	var ann []Announce
 	err = session.DB(db.DatabaseName).C(db.DatabaseName).Find(bson.M{"_id": ID}).All(&ann)
-
+	log.Println(ann)
 	if err != nil {
 		return []Announce{}
 	}
