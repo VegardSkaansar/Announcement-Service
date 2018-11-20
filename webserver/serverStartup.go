@@ -43,7 +43,7 @@ func ServerStart() {
 	database.GlobalDBUser = &database.MongoDB{
 		DatabaseURL:      "mongodb://admin:admin123@ds039311.mlab.com:39311/announce",
 		DatabaseName:     "announce",
-		DatabaseAnnounce: "user",
+		DatabaseAnnounce: "announce",
 	}
 
 	database.GlobalDBUser.Init()

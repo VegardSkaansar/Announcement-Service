@@ -15,16 +15,16 @@ var GlobalDBAdmin StorageUser
 // Only admins can use this interface
 type StorageUser interface {
 	Init()
-	AddUser(person Collection)
+	AddUser(person User)
 	DeleteUser(username string)
 	ExistUser(username string) bool
 	GetUserPassword(username string) string
-	GetUser(username string) []Announce
+	GetUser(username string) bson.ObjectId
 }
 
 // AddUser adds a user to the datastructure
 // with a empty annoucement array
-func (db *MongoDB) AddUser(person Collection) {
+func (db *MongoDB) AddUser(person User) {
 	session, err := mgo.Dial(db.DatabaseURL)
 	if err != nil {
 		panic(err)
@@ -46,7 +46,7 @@ func (db *MongoDB) DeleteUser(username string) {
 	}
 	defer session.Close()
 
-	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Remove(bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}})
+	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Remove(bson.M{"username": username})
 
 	if err != nil {
 		log.Printf("Somethings wrong with Remove():%v", err.Error())
@@ -63,7 +63,7 @@ func (db *MongoDB) ExistUser(username string) bool {
 	}
 	defer session.Close()
 
-	var result []Collection
+	var result []User
 
 	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Find(bson.M{}).All(&result)
 
@@ -71,7 +71,7 @@ func (db *MongoDB) ExistUser(username string) bool {
 		return false
 	}
 	for _, data := range result {
-		if data.Person.Username == username {
+		if data.Username == username {
 			return true
 		}
 	}
@@ -86,7 +86,7 @@ func (db *MongoDB) GetUserPassword(username string) string {
 		panic(err)
 	}
 	defer session.Close()
-	var pass []Collection
+	var pass []User
 
 	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Find(bson.M{}).All(&pass)
 
@@ -94,31 +94,27 @@ func (db *MongoDB) GetUserPassword(username string) string {
 		return ""
 	}
 	for _, data := range pass {
-		if data.Person.Username == username {
-			return data.Person.Password
+		if data.Username == username {
+			return data.Password
 		}
 	}
 	return ""
 }
 
 //GetUser gets the user
-func (db *MongoDB) GetUser(username string) []Announce {
+func (db *MongoDB) GetUser(username string) bson.ObjectId {
 	session, err := mgo.Dial(db.DatabaseURL)
 	if err != nil {
 		panic(err)
 	}
 	defer session.Close()
-	var pass []Collection
+	var pass User
 
-	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Find(bson.M{}).All(&pass)
+	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Find(bson.M{"username": username}).One(&pass)
 
 	if err != nil {
-		return []Announce{}
+		log.Println("failed to find object id")
 	}
-	for _, data := range pass {
-		if data.Person.Username == username {
-			return data.Ads
-		}
-	}
-	return []Announce{}
+
+	return pass.ObjectID
 }

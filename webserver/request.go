@@ -100,6 +100,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		newUser := database.User{
+			ObjectID:  bson.NewObjectId(),
 			Username:  r.Form["username"][0],
 			Password:  hashAndSalt(r.Form["password"][0]),
 			FirstName: r.Form["firstName"][0],
@@ -108,27 +109,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			Admin:     false,
 		}
 
-		var ann []database.Announce
-
-		n1 := database.Announce{
-			Title:       "test",
-			Description: "test",
-			Cost:        "10",
-		}
-		n2 := database.Announce{
-			Title:       "test",
-			Description: "test",
-			Cost:        "10",
-		}
-
-		ann = append(ann, n1)
-		ann = append(ann, n2)
-		collection := database.Collection{
-			ObjectID: bson.NewObjectId(),
-			Person:   newUser,
-			Ads:      ann,
-		}
-		database.GlobalDBAdmin.AddUser(collection)
+		database.GlobalDBAdmin.AddUser(newUser)
 	}
 }
 
@@ -154,7 +135,9 @@ func MyAds(w http.ResponseWriter, r *http.Request) {
 
 		array := database.GlobalDBAdmin.GetUser(username.(string))
 
-		ExecuteHTML(w, "AbuHtml/myAds.html", array)
+		anno := database.GlobalDBUser.UserAnnouncement(array)
+
+		ExecuteHTML(w, "AbuHtml/myAds.html", anno)
 
 	} else if r.Method == "POST" {
 		r.ParseForm()
@@ -162,13 +145,16 @@ func MyAds(w http.ResponseWriter, r *http.Request) {
 		CookieValue := ReadCookie(w, r)
 		username := decodeToken(CookieValue)
 
+		array := database.GlobalDBAdmin.GetUser(username.(string))
+
 		newAd := database.Announce{
 			Title:       r.Form["Title"][0],
 			Description: r.Form["Description"][0],
 			Cost:        r.Form["Cost"][0],
+			UserID:      array,
 		}
 
-		ok := database.GlobalDBUser.AddAnnouncement(newAd, username.(string))
+		ok := database.GlobalDBUser.AddAnnouncement(newAd)
 
 		if ok {
 			http.Redirect(w, r, "/myads", 301)

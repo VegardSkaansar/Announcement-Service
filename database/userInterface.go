@@ -14,9 +14,9 @@ var GlobalDBUser StorageAnnouncement
 // add their Annoucements delete or modify
 type StorageAnnouncement interface {
 	Init()
-	AddAnnouncement(ad Announce, username string) bool
-	DeleteAnnouncement(title string, username string) bool
-	ModifyAnnouncement(ads Announce, username string) bool
+	AddAnnouncement(ad Announce) bool
+	DeleteAnnouncement(title string) bool
+	UserAnnouncement(ID bson.ObjectId) []Announce
 }
 
 // Init test if the connection happend
@@ -31,16 +31,14 @@ func (db *MongoDB) Init() {
 }
 
 // AddAnnouncement adds a users announce
-func (db *MongoDB) AddAnnouncement(ad Announce, username string) bool {
+func (db *MongoDB) AddAnnouncement(ad Announce) bool {
 	session, err := mgo.Dial(db.DatabaseURL)
 	if err != nil {
 		panic(err)
 	}
 	defer session.Close()
-	change := bson.M{"$push": bson.M{"ads": ad}}
-	match := bson.M{"person": bson.M{"username": username}}
 
-	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
+	err = session.DB(db.DatabaseName).C(db.DatabaseAnnounce).Insert(ad)
 
 	if err != nil {
 		return false
@@ -49,17 +47,15 @@ func (db *MongoDB) AddAnnouncement(ad Announce, username string) bool {
 }
 
 // DeleteAnnouncement takes a announce with a title and deletes it
-func (db *MongoDB) DeleteAnnouncement(title string, username string) bool {
+func (db *MongoDB) DeleteAnnouncement(title string) bool {
 
 	session, err := mgo.Dial(db.DatabaseURL)
 	if err != nil {
 		panic(err)
 	}
 	defer session.Close()
-	change := bson.M{"ads": bson.M{"$pull": bson.M{"title": title}}}
-	match := bson.M{"person": bson.M{"username": username}}
 
-	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
+	err = session.DB(db.DatabaseName).C(db.DatabaseName).Remove(bson.M{"title": title})
 
 	if err != nil {
 		return false
@@ -67,22 +63,20 @@ func (db *MongoDB) DeleteAnnouncement(title string, username string) bool {
 	return true
 }
 
-// ModifyAnnouncement Takes a title and modifies what information the user wants
-// doesnt work yet will work when discussed
-func (db *MongoDB) ModifyAnnouncement(ads Announce, username string) bool {
+// UserAnnouncement takes a announce with a title and deletes it
+func (db *MongoDB) UserAnnouncement(ID bson.ObjectId) []Announce {
 
 	session, err := mgo.Dial(db.DatabaseURL)
 	if err != nil {
 		panic(err)
 	}
 	defer session.Close()
-	change := bson.M{"ads": bson.M{"$set": bson.M{"title": ads.Title}}}
-	match := bson.M{"person": bson.M{"$elemMatch": bson.M{"username": username}}}
 
-	err = session.DB(db.DatabaseName).C(db.DatabaseName).Update(match, change)
+	var ann []Announce
+	err = session.DB(db.DatabaseName).C(db.DatabaseName).Find(bson.M{"_id": ID}).All(&ann)
 
 	if err != nil {
-		return false
+		return []Announce{}
 	}
-	return true
+	return ann
 }
