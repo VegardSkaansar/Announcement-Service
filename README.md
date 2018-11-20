@@ -32,6 +32,30 @@ Bugfixing also proved rather time consuming, even though they in many cases were
 We would say this project has taught us first hand how the server side code, interacts with the local, client side html.
 How pages are loaded up, and passing of information from the database over to the screen to be shown to the user.
 
+### How to use the application
+Make yourself a user and then 
+/login will log u in
+to logout you need to close the browser for now
+We implemeted delete ads, but havent add the button for delete yet
+We havent secured input so much, when our focus was on the backend with using json tokens to verify,
+And adding a middelware
+
+here is all the url:
+/login
+
+/announce
+
+/home
+
+/myads
+
+/register
+
+
+### Other things
+
+As a focus we did go in to this project to learn more about how to add security layers in our webserver
+Something we achived with json tokens, encrypt algorithm and cookies
 
 ### Total work hours.
 
